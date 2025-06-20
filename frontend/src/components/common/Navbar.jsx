@@ -47,7 +47,7 @@ const Navbar = () => {
         </Link>
         <button onClick = {toggleCartDrawer} className="relative hover:text-black">
         <HiOutlineShoppingBag className='h-6 w-6 text-gray-700' />
-        <span className="absolute -top-1 bg-red-500 text-white text-xs rounded-full px-2 py-0.5" >
+        <span className="absolute -top-1 bg-black text-white text-xs rounded-full px-2 py-0.5" >
         4
         </span>
         </button>
@@ -71,6 +71,15 @@ const Navbar = () => {
           <button onClick={toggleNavDrawer}>
             <IoMdClose className="h-6 w-6 text-gray-600" />
           </button>
+        </div>
+        <div className="p-4">
+          <h2 className='text-xl font-semibold mb-4'>Menu</h2>
+          <nav className='space-y-4'>
+            <Link to = "#" onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Women</Link>
+            <Link to = "#" onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Men</Link>
+            <Link to = "#" onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Top Wear</Link>
+            <Link to = "#" onClick={toggleNavDrawer} className='block text-gray-600 hover:text-black'>Bottom Wear</Link>
+          </nav>
         </div>
       </div>
     </>
