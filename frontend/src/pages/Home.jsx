@@ -7,6 +7,7 @@ import ProductGrid from '../components/products/ProductGrid';
 import mensCol from '../assets/ha-nguy-n-y1LlQ49Thko-unsplash.jpg';
 import womenCol from '../assets/alina-bordunova-HgN5CqM6qkQ-unsplash.jpg';
 import FeaturedCollection from '../components/products/FeaturedCollection';
+import FeaturesSection from '../components/products/FeaturesSection';
 
 
  const placeholderProducts = [
@@ -94,6 +95,7 @@ const Home = () => {
       </div>
 
       <FeaturedCollection />
+      <FeaturesSection />
     </div>
   );
 };

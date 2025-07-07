@@ -6,6 +6,7 @@ import SearchBar from './SearchBar'
 import CartDrawer from '../Layout/CartDrawer'
 import {IoMdClose} from 'react-icons/io'
 
+
 const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
@@ -27,7 +28,7 @@ const Navbar = () => {
       </div>
       {/* Navigation Links */}
       <div className="hidden md:flex space-x-6">
-        <Link to="#" className="text-gray-700 hover:text-black text-sm font-medium uppercase">
+        <Link to="/collections/all" className="text-gray-700 hover:text-black text-sm font-medium uppercase">
           WOMEN
         </Link>
         <Link to="#" className="text-gray-700 hover:text-black text-sm font-medium uppercase">
