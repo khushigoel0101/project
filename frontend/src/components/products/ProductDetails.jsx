@@ -39,8 +39,25 @@ const similarProducts = [
         price: 150,
         images: [{
             url: womenCol,
-            }],
-        },
+        }],
+    },
+    {
+        _id : 3,
+        name: "Product 3",
+        price: 150,
+        images: [{
+            url: mensCol,
+        }],
+    },
+    {
+        _id : 4,
+        name: "Product 4",
+        price: 150,
+        images: [{
+            url: womenCol,
+        }],
+    },
+
 ]
 
 const ProductDetails = () => {
@@ -206,7 +223,7 @@ const ProductDetails = () => {
                 </div>
                 <div className="mt-20">
                     <h2 className="text-2xl text-center font-medium mb-4">You May Also Like</h2>
-                    <ProductGrid product={similarProducts} />
+                    <ProductGrid products={similarProducts} />
                 </div>
             </div>
         </div>
