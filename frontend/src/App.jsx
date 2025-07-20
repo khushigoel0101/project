@@ -6,6 +6,9 @@ import Register from "./pages/Register.jsx"
 import Profile from "./pages/Profile.jsx"
 import CollectionPage from "./pages/CollectionPage.jsx"
 import {Toaster} from "sonner"
+import ProductDetails from "./components/products/ProductDetails.jsx"
+import Checkout from "./components/cart/Checkout.jsx"
+
 
 
 const App = () => {
@@ -19,6 +22,8 @@ const App = () => {
       <Route path="register" element={<Register />} />
       <Route path="profile" element={<Profile />} />
       <Route path="Collections/:collection" element={<CollectionPage />} />
+      <Route path="products/:id" element={<ProductDetails/>} />
+      <Route path="checkout" element={<Checkout />} />
       {/* Add more user routes here */}
       </Route>
       {/* <Route>{/*admin layout}</Route> */}

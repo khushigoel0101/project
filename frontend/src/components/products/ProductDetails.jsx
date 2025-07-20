@@ -3,6 +3,8 @@ import { toast } from "sonner"
 import mensCol from '../../assets/ha-nguy-n-y1LlQ49Thko-unsplash.jpg';
 import womenCol from '../../assets/alina-bordunova-HgN5CqM6qkQ-unsplash.jpg';
 import ProductGrid from "./ProductGrid";
+import { Link } from "react-router-dom";
+
 
 const selectedProduct = {
     name: "Signature Jacket",
@@ -73,8 +75,8 @@ const ProductDetails = () => {
     },[selectedProduct])
 
     const handleQuantityChange = (action) => {
-        if(action == "plus") setSelectedQuantity((prev) => prev + 1)
-        if(action == "minus") setSelectedQuantity((prev) => prev - 1)
+        if(action === "plus") setSelectedQuantity((prev) => prev + 1)
+        if(action === "minus") setSelectedQuantity((prev) => prev - 1)
     }
 
     const handleAddToCart = () => {
@@ -115,10 +117,15 @@ const ProductDetails = () => {
                     {/*Main Image */}
                     <div className="md:w-1/2">
                     <div className="mb-4">
-                        <img
-                        src={mainImage}
-                        alt="Main Product"
-                        className="w-full h-auto object-cover rounded-lg"/>
+                        {mainImage && (
+                            <img
+                              src={mainImage}
+                              alt="Main Product"
+                              className="w-full h-auto object-cover rounded-lg"
+                             />
+                            )
+                        }
+
                     </div>
                     </div>
                     {/*Mobile Thumbnail */}
