@@ -8,6 +8,8 @@ import CollectionPage from "./pages/CollectionPage.jsx"
 import {Toaster} from "sonner"
 import ProductDetails from "./components/products/ProductDetails.jsx"
 import Checkout from "./components/cart/Checkout.jsx"
+import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx"
+import { OrderDetailsPage } from "./pages/OrderDetailsPage.jsx"
 
 
 
@@ -24,6 +26,8 @@ const App = () => {
       <Route path="Collections/:collection" element={<CollectionPage />} />
       <Route path="products/:id" element={<ProductDetails/>} />
       <Route path="checkout" element={<Checkout />} />
+      <Route path="order-confirmation" element={<OrderConfirmationPage />} />
+      <Route path="order/:id" element={<OrderDetailsPage />} />
       {/* Add more user routes here */}
       </Route>
       {/* <Route>{/*admin layout}</Route> */}
