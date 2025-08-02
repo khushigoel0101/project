@@ -16,6 +16,7 @@ import AdminHomepage from "./pages/AdminHomepage.jsx"
 import UserManagement from "./components/admin/UserManagement.jsx"
 import ProductManagement from "./components/admin/ProductManagement.jsx"
 import EditProductPage from "./components/admin/EditProductPage.jsx"
+import OrderManagement from "./components/admin/OrderManagement.jsx"
 
 
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
       <Route path="users" element={<UserManagement />} />
       <Route path="products" element={<ProductManagement />} />
       <Route path="products/:id/edit" element={<EditProductPage />} />
+      <Route path="orders" element={<OrderManagement />} />
       </Route>
     </Routes>
     </BrowserRouter>
