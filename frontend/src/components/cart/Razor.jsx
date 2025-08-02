@@ -15,7 +15,7 @@ const Razor = ({ amount, onSuccess, onError }) => {
 
   const handleRazorpayPayment = () => {
     const options = {
-      key: "rzp_test_6rAvl9PlA3vNKh", 
+      KEY: import.meta.env.VITE_RAZORPAY_KEY, 
       amount: amount * 100, 
       currency: "INR",
       name: "The Xyz Store",

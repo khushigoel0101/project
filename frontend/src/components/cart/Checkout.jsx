@@ -200,9 +200,9 @@ const Checkout = () => {
           <span>Total:</span>
           <span>₹{cart.totalPrice?.toLocaleString()}</span>
         </div>
-        <div className='flex justify-between items-center text-lg mt-4 border-t pt-4'>
-          <p>Total</p>
-          <p>Rs.{cart.totalPrice?.toLocaleString()}</p>
+        <div className='flex justify-between font-semibold items-center text-lg '>
+          <p>Shipping:</p>
+          <p>Free</p>
         </div>
       </div>
     </div>

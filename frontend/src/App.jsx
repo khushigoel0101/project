@@ -10,7 +10,12 @@ import ProductDetails from "./components/products/ProductDetails.jsx"
 import Checkout from "./components/cart/Checkout.jsx"
 import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx"
 import { OrderDetailsPage } from "./pages/OrderDetailsPage.jsx"
-
+import MyOrdersPage from "./pages/MyOrdersPage.jsx"
+import AdminLayout from "./components/admin/AdminLayout.jsx"
+import AdminHomepage from "./pages/AdminHomepage.jsx"
+import UserManagement from "./components/admin/UserManagement.jsx"
+import ProductManagement from "./components/admin/ProductManagement.jsx"
+import EditProductPage from "./components/admin/EditProductPage.jsx"
 
 
 const App = () => {
@@ -28,9 +33,16 @@ const App = () => {
       <Route path="checkout" element={<Checkout />} />
       <Route path="order-confirmation" element={<OrderConfirmationPage />} />
       <Route path="order/:id" element={<OrderDetailsPage />} />
+      <Route path="my-orders" element={<MyOrdersPage />} />
       {/* Add more user routes here */}
       </Route>
       {/* <Route>{/*admin layout}</Route> */}
+      <Route path="/admin" element={<AdminLayout />}>
+      <Route index element={<AdminHomepage />} />
+      <Route path="users" element={<UserManagement />} />
+      <Route path="products" element={<ProductManagement />} />
+      <Route path="products/:id/edit" element={<EditProductPage />} />
+      </Route>
     </Routes>
     </BrowserRouter>
   )

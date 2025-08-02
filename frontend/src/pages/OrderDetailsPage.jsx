@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 
 export const OrderDetailsPage = () => {
@@ -62,7 +62,63 @@ export const OrderDetailsPage = () => {
                         </span>
                     </div>
              </div>
+             {/* customer, payment, shipping info */}
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8'>
+                <div>
+                <h4 className='text-lg font-semibold mb-2'>Payment info</h4>
+                <p>Payment method: {orderDetails.paymentMethod}</p>
+                <p>Status: {orderDetails.isPaid ? "Paid" : "Unpaid"}</p> 
+                </div>
+                <div>
+                <h4 className='text-lg font-semibold mb-2'>Shipping info</h4>
+                <p>Shipping method: {orderDetails.shippingMethod}</p>
+                <p>
+                    Adress: {" "}
+                    {`${orderDetails.shippingAddress.city}, ${orderDetails.shippingAddress.country}`}
+                </p> 
+                </div>
              </div>
+             {/* Product List */}
+             <div className='overflow-x-auto'>
+                <h4 className='min-w-full text-gray-600 mb-4'>Products</h4>
+                <table className='min-w-full text-gray-600 mb-4'>
+                    <thead className='bg-gray-100'>
+                        <tr>
+                            <th className='py-2 px-4'>Name</th>
+                            <th className='py-2 px-4'>Unit Price</th>
+                            <th className='py-2 px-4'>Quantity</th>
+                            <th className='py-2 px-4'>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orderDetails.orderItems.map((item) => (
+                                <tr key= {item.product} className='border-b'>
+                                    <td className='py-2 px-4 flex items-center'>
+                                        <img 
+                                        src={item.image}
+                                        alt={item.name}
+                                        className='w-12 h-12 object-cover rounded mr-4' />
+                                        <Link
+                                        to={`/product/${item.productId}`}
+                                        className='text-blue-600 hover:underline'>
+                                            {item.name}
+                                        </Link>
+                                        </td>
+                                    <td className='py-2 px-4'>${item.price}</td>
+                                    <td className='py-2 px-4'>{item.quantity}</td>
+                                    <td className='py-2 px-4'>${(item.price * item.quantity)}</td>
+
+                                </tr>
+                                ))}
+                        </tbody>
+                </table>
+         </div>
+             {/* Back to my orders */}
+             <Link to="/my-orders" className='text-blue-500 hover:underline'>
+                Back to My Orders
+
+             </Link>
+         </div>
         )}
     </div>
   )
