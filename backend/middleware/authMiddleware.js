@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/Users');
 
 // Middleware to protect routes
-const protect = async(req, resizeBy, next) => {
+const protect = async(req, res, next) => {
     let token;
 
     if(
@@ -19,12 +19,20 @@ const protect = async(req, resizeBy, next) => {
         } catch (error) {
             console.error("Token verification failed:", error); 
              
-            resizeBy.status(401).json({ message: 'Not authorized, token failed' });
+            res.status(401).json({ message: 'Not authorized, token failed' });
         }
      } else {
-        resizeBy.status(401).json({ message: 'Not authorized, no token provided' });
+        res.status(401).json({ message: 'Not authorized, no token provided' });
      }
 }
 
 
-module.exports = { protect };
+const admin = (req, res, next) => {
+    if(req.user && req.user.role === 'admin') {
+        next();
+    } else {
+        res.status(403).json({ message: 'Access denied, admin only' });
+    }
+}
+
+module.exports = { protect , admin };
