@@ -5,6 +5,11 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/ProductRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const checkoutRoutes = require('./routes/checkoutRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
+const subscribeRoutes = require('./routes/subscriberRoutes');
+const adminRoutes = require("./routes/adminRoutes")
 
 dotenv.config();  // Load env first
 
@@ -26,6 +31,14 @@ app.get('/', (req, res) => {
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/checkout', checkoutRoutes)
+app.use('/api/orders', orderRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api', subscribeRoutes);
+
+//admin routes
+app.use("/api/admin/users", adminRoutes)
+
 
 // Start server
 const PORT = process.env.PORT || 3000;
