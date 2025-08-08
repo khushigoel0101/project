@@ -1,5 +1,4 @@
 const express = require('express');
-const User = require('../models/Users');
 const jwt = require('jsonwebtoken');
 const { protect } = require('../middleware/authMiddleware'); // Import the protect middleware
 const Users = require('../models/Users'); // Ensure this is the correct path to your User model
@@ -19,7 +18,7 @@ router.post('/register', async (req, res) => {
 
         if(user) return res.status(400).json({ message: 'User already exists' });
 
-        user = new User({name, email, password});
+        user = new Users({name, email, password});
         await user.save();
 
         const payload = {user: { id: user._id, role: user.role } };

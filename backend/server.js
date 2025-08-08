@@ -10,6 +10,8 @@ const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const subscribeRoutes = require('./routes/subscriberRoutes');
 const adminRoutes = require("./routes/adminRoutes")
+const productAdminRoutes = require("./routes/productAdminRoutes")
+const adminOrderRoutes= require("./routes/adminOrderRoutes")
 
 dotenv.config();  // Load env first
 
@@ -38,6 +40,8 @@ app.use('/api', subscribeRoutes);
 
 //admin routes
 app.use("/api/admin/users", adminRoutes)
+app.use("/api/admin/products", productAdminRoutes)
+app.use("/api/admin/orders", adminOrderRoutes)
 
 
 // Start server
