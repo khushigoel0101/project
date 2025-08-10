@@ -2,9 +2,14 @@ import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { FaUser, FaBoxOpen, FaClipboardList, FaStore, FaSignOutAlt } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 const AdminSidebar = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const handleLogout = () => {
+    dispatch(logout())
+    dispatch(clearCart())
     navigate('/');
   }
   return (

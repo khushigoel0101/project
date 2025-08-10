@@ -18,8 +18,10 @@ import ProductManagement from "./components/admin/ProductManagement.jsx"
 import EditProductPage from "./components/admin/EditProductPage.jsx"
 import OrderManagement from "./components/admin/OrderManagement.jsx"
 
+
 import {Provider } from "react-redux";
 import store from "./redux/store"
+import ProtectedRoute from "./components/common/ProtectedRoute.jsx"
 
 
 const App = () => {
@@ -42,7 +44,11 @@ const App = () => {
       {/* Add more user routes here */}
       </Route>
       {/* <Route>{/*admin layout}</Route> */}
-      <Route path="/admin" element={<AdminLayout />}>
+      <Route path="/admin" element={
+        <ProtectedRoute role="admin">
+           <AdminLayout />
+        </ProtectedRoute>
+       }>
       <Route index element={<AdminHomepage />} />
       <Route path="users" element={<UserManagement />} />
       <Route path="products" element={<ProductManagement />} />

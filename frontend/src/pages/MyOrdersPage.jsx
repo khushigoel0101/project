@@ -2,39 +2,20 @@ import React, { useState, useEffect } from 'react';
 import login from '../assets/register.jpg';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { fetchUserOrders } from '../redux/slices/orderSlice';
+import { useDispatch } from 'react-redux';
 
 const MyOrdersPage = () => {
-  const [orders, setOrders] = useState([]);
+  
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { orders, loading, error} = useSelector((state) => state.order)
 
   useEffect(() => {
-    setTimeout(() => {
-      const mockOrders = [
-        {
-          id: 1,
-          createdAt: new Date(),
-          ShippingAddress: '123 Main St, City, Country',
-          OrderItems: [
-            { name: 'Product 1', image: login },
-            { name: 'Product 2', image: login }
-          ],
-          totalPrice: 100,
-          isPaid: true,
-        },
-        {
-          id: 2,
-          createdAt: new Date(),
-          ShippingAddress: '456 Another St, Town, Country',
-          OrderItems: [
-            { name: 'Product 3', image: login },
-          ],
-          totalPrice: 200,
-          isPaid: false,
-        }
-      ];
-      setOrders(mockOrders);
-    }, 1000);
-  }, []);
+    dispatch(fetchUserOrders())
+  }, [dispatch])
+
 
   const handleRowClick = (orderId) => {
 
@@ -65,8 +46,8 @@ const MyOrdersPage = () => {
                 className="border-b hover:border-gray-300 cursor-pointer">
                   <td className="py-2 px-4">
                     <img
-                      src={order.OrderItems[0].image}
-                      alt={order.OrderItems[0].name}
+                      src={order.orderItems[0].image}
+                      alt={order.orderItems[0].name}
                       className="w-10 h-10 sm:h-12 object-cover rounded-lg"
                     />
                   </td>
@@ -75,9 +56,9 @@ const MyOrdersPage = () => {
                     {new Date(order.createdAt).toLocaleDateString()}<br />
                     {new Date(order.createdAt).toLocaleTimeString()}
                   </td>
-                  <td className="py-2 px-4 sm:py-4 sm:px-4">{order.ShippingAddress}</td>
+                  <td className="py-2 px-4 sm:py-4 sm:px-4">{order.shippingAddress}</td>
                   <td className="py-2 px-4 sm:py-4 sm:px-4">
-                    {order.OrderItems.map((item) => item.name).join(', ')}
+                    {order.orderItems.map((item) => item.name).join(', ')}
                   </td>
                   <td className="py-2 px-4">${order.totalPrice}</td>
                   <td className="py-2 px-4">

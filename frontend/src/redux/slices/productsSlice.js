@@ -27,6 +27,7 @@ export const fetchProductsByFilters = createAsyncThunk(
         if(maxPrice) query.append("maxPrice", maxPrice);
         if(sortBy) query.append("sortBy", sortBy);
         if(search) query.append("search", search);
+        if(category) query.append("category", category);
         if(material) query.append("material", material);
         if(brand) query.append("brand", brand);
         if(limit) query.append("limit", limit);
@@ -128,7 +129,7 @@ const productsSlice = createSlice({
          })
          .addCase(fetchProductsByFilters.rejected, (state, action) => {
             state.loading = false;
-            state.error - action.error.message;
+            state.error = action.error.message;
          })
          //handle fetching single product details
          .addCase(fetchProductDetails.pending, (state) => {
@@ -141,7 +142,7 @@ const productsSlice = createSlice({
          })
          .addCase(fetchProductDetails.rejected, (state, action) => {
             state.loading = false;
-            state.error - action.error.message;
+            state.error = action.error.message;
          })
          // handle updating product 
          .addCase(updateProduct.pending, (state) => {
@@ -160,10 +161,22 @@ const productsSlice = createSlice({
          })
          .addCase(updateProduct.rejected, (state, action) => {
             state.loading = false;
-            state.error - action.error.message;
+            state.error = action.error.message;
+         })
+         .addCase(fetchSimilarProducts.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+         })
+         .addCase(fetchSimilarProducts.fulfilled, (state, action) => {
+            state.loading = false;
+            state.similarProducts = action.payload;
+         })
+         .addCase(fetchSimilarProducts.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.error.message;
          })
     }
 })
 
-export const { setFilters, clearFilters} = productSlice.actions;
-export default productSlice.reducer;
+export const { setFilters, clearFilters} = productsSlice.actions;
+export default productsSlice.reducer;

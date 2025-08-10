@@ -9,7 +9,7 @@ const cartItemSchema = new mongoose.Schema({
     },
     name: String,
     image: String,
-    price: String,
+    price: Number,
     size: String,
     color: String,
     quantity : {
@@ -21,7 +21,7 @@ const cartItemSchema = new mongoose.Schema({
 )
 
 const cartSchema = new mongoose.Schema({
-    user : {
+    userId : {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },

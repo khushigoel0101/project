@@ -1,54 +1,93 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Razor from './Razor';
+import { useDispatch, useSelector } from 'react-redux';
+import { createCheckout } from '../../redux/slices/checkoutSlice' // adjust path if needed
+import axios from 'axios';
 
-const cart = {
-  products: [
-    {
-      productId: 1,
-      name: "Phone-Charm",
-      size: "M",
-      color: "Red",
-      price: 80,
-      quantity: 1,
-      image: "https://picsum.photos/200?random=1",
-    },
-    {
-      productId: 2,
-      name: "Jeans",
-      size: "M",
-      color: "Gray",
-      price: 1200,
-      quantity: 1,
-      image: "https://picsum.photos/200?random=2",
-    },
-  ],
-  totalPrice: 1280,
-};
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const [checkoutId, setCheckoutId] = React.useState(null);
-  const [shippingAddress, setShippingAddress] = React.useState({
+  const dispatch = useDispatch();
+  const { cart, loading, error } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
+
+  const [checkoutId, setCheckoutId] = useState(null);
+  const [shippingAddress, setShippingAddress] = useState({
     firstName: '',
     lastName: '',
     address: '',
     city: '',
-    zipCode: '',
+    postalCode: '',
     country: '',
     phone: '',
   });
 
-  const handleCreateCheckout = (e) => {
+  // Ensure cart is loaded before proceeding
+  useEffect(() => {
+    if (!cart || !cart.product || cart.product.length === 0) {
+      navigate('/');
+    }
+  }, [cart, navigate]);
+
+  
+  const handleCreateCheckout = async (e) => {
     e.preventDefault();
-    // Dummy logic to simulate generating a checkout ID
-    setCheckoutId('checkout_' + Date.now());
-    // You can also send shippingAddress to backend here
+    if (cart && cart.product && cart.product.length > 0) {
+      const res = await dispatch (
+        createCheckout({
+          checkoutItems: cart.product,
+          shippingAddress,
+          paymentMethod: 'RazorPay',
+          totalPrice: cart.totalPrice,
+        })
+      );
+      if (res.payload && res.payload._id) {
+        setCheckoutId(res.payload._id);
+      }
+    }
   };
 
-  const handlePaymentSuccess = (details) => {
-    console.log(details);
-    navigate("/order-confirmation")
+  const handlePaymentSuccess = async (details) => {
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`,
+        { paymentStatus: 'paid', paymentDetails: details },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          },
+        }
+      );
+      
+        await handleFinalizeCheckout(checkoutId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleFinalizeCheckout = async (checkoutId) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/finalize`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          },
+        }
+      );
+       console.log('Finalize response:', response);
+       navigate('/order-confirmation');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (loading) return <p>Loading cart ...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!cart || !cart.product || cart.product.length === 0) {
+    return <p>Your cart is empty</p>;
   }
 
   return (
@@ -62,7 +101,7 @@ const Checkout = () => {
             <label className="block text-gray-700">Email</label>
             <input
               type="email"
-              value="user@example.com"
+              value={user ? user.email : ''}
               className="w-full p-2 border rounded bg-gray-100"
               disabled
             />
@@ -76,7 +115,10 @@ const Checkout = () => {
                 type="text"
                 value={shippingAddress.firstName}
                 onChange={(e) =>
-                  setShippingAddress({ ...shippingAddress, firstName: e.target.value })
+                  setShippingAddress({
+                    ...shippingAddress,
+                    firstName: e.target.value,
+                  })
                 }
                 className="w-full p-2 border rounded"
                 required
@@ -88,7 +130,10 @@ const Checkout = () => {
                 type="text"
                 value={shippingAddress.lastName}
                 onChange={(e) =>
-                  setShippingAddress({ ...shippingAddress, lastName: e.target.value })
+                  setShippingAddress({
+                    ...shippingAddress,
+                    lastName: e.target.value,
+                  })
                 }
                 className="w-full p-2 border rounded"
                 required
@@ -102,7 +147,10 @@ const Checkout = () => {
               type="text"
               value={shippingAddress.address}
               onChange={(e) =>
-                setShippingAddress({ ...shippingAddress, address: e.target.value })
+                setShippingAddress({
+                  ...shippingAddress,
+                  address: e.target.value,
+                })
               }
               className="w-full p-2 border rounded"
               required
@@ -116,7 +164,10 @@ const Checkout = () => {
                 type="text"
                 value={shippingAddress.city}
                 onChange={(e) =>
-                  setShippingAddress({ ...shippingAddress, city: e.target.value })
+                  setShippingAddress({
+                    ...shippingAddress,
+                    city: e.target.value,
+                  })
                 }
                 className="w-full p-2 border rounded"
                 required
@@ -126,9 +177,12 @@ const Checkout = () => {
               <label className="block text-gray-700">Postal Code</label>
               <input
                 type="text"
-                value={shippingAddress.zipCode}
+                value={shippingAddress.postalCode}
                 onChange={(e) =>
-                  setShippingAddress({ ...shippingAddress, zipCode: e.target.value })
+                  setShippingAddress({
+                    ...shippingAddress,
+                    postalCode: e.target.value,
+                  })
                 }
                 className="w-full p-2 border rounded"
                 required
@@ -142,7 +196,10 @@ const Checkout = () => {
               type="tel"
               value={shippingAddress.phone}
               onChange={(e) =>
-                setShippingAddress({ ...shippingAddress, phone: e.target.value })
+                setShippingAddress({
+                  ...shippingAddress,
+                  phone: e.target.value,
+                })
               }
               className="w-full p-2 border rounded"
               required
@@ -155,7 +212,10 @@ const Checkout = () => {
               type="text"
               value={shippingAddress.country}
               onChange={(e) =>
-                setShippingAddress({ ...shippingAddress, country: e.target.value })
+                setShippingAddress({
+                  ...shippingAddress,
+                  country: e.target.value,
+                })
               }
               className="w-full p-2 border rounded"
               required
@@ -173,8 +233,11 @@ const Checkout = () => {
             ) : (
               <div>
                 <h3 className="text-lg mb-4">Pay with Razorpay</h3>
-                <Razor amount={100} onSuccess={handlePaymentSuccess}
-                onError={(err) => alert("Payment failed.Try again")}/>
+                <Razor
+                  amount={cart.totalPrice}
+                  onSuccess={handlePaymentSuccess}
+                  onError={() => alert('Payment failed. Try again')}
+                />
               </div>
             )}
           </div>
@@ -185,13 +248,21 @@ const Checkout = () => {
       <div className="bg-white rounded-lg p-6 shadow h-fit">
         <h3 className="text-xl mb-4 font-semibold">Order Summary</h3>
         <ul className="divide-y">
-          {cart.products.map((product) => (
+          {cart.product.map((product) => (
             <li key={product.productId} className="flex gap-4 py-4">
-              <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded" />
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-16 h-16 object-cover rounded"
+              />
               <div>
                 <h4 className="font-medium">{product.name}</h4>
-                <p className="text-sm text-gray-600">Size: {product.size}, Color: {product.color}</p>
-                <p className="text-sm text-gray-700">₹{product.price} x {product.quantity}</p>
+                <p className="text-sm text-gray-600">
+                  Size: {product.size}, Color: {product.color}
+                </p>
+                <p className="text-sm text-gray-700">
+                  ₹{product.price} x {product.quantity}
+                </p>
               </div>
             </li>
           ))}
@@ -200,7 +271,7 @@ const Checkout = () => {
           <span>Total:</span>
           <span>₹{cart.totalPrice?.toLocaleString()}</span>
         </div>
-        <div className='flex justify-between font-semibold items-center text-lg '>
+        <div className="flex justify-between font-semibold items-center text-lg">
           <p>Shipping:</p>
           <p>Free</p>
         </div>

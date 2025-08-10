@@ -8,12 +8,12 @@ const router = express.Router();
 //route GET /api/admin/orders
 //desc GET all orders
 //access Private admin
-router.get("/", admin, async (req, res) => {
+router.get("/",  protect,admin,async (req, res) => {
     try {
         const orders = await Order.find({}).populate("user", "name email");
         res.json(orders);
     } catch (error) {
-        console.eeror(error);
+        console.error(error);
         res.status(500).json({ msg: "Server error" });
     }
 })
@@ -25,7 +25,7 @@ router.get("/", admin, async (req, res) => {
 
 router.put("/:id", protect, admin, async (req,res) => {
     try {
-        const order = await Order.findById(req.params.id)
+        const order = await Order.findById(req.params.id).populate("user", "name")
         if(order) {
             order.status = req.body.status || order.status;
             order.isDelivered = 

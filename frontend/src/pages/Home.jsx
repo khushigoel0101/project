@@ -8,76 +8,43 @@ import mensCol from '../assets/ha-nguy-n-y1LlQ49Thko-unsplash.jpg';
 import womenCol from '../assets/alina-bordunova-HgN5CqM6qkQ-unsplash.jpg';
 import FeaturedCollection from '../components/products/FeaturedCollection';
 import FeaturesSection from '../components/products/FeaturesSection';
+import { useDispatch } from 'react-redux';
+import { fetchProductsByFilters } from '../redux/slices/productsSlice';
+import ProductDetails from '../components/products/ProductDetails';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 
- const placeholderProducts = [
-   {
-          _id : 1,
-          name: "Product 1",
-          price: 100,
-          images: [{
-              url: mensCol,
-          }],
-      },
-      {
-          _id : 2,
-          name: "Product 2",
-          price: 150,
-          images: [{
-              url: womenCol,
-          }],
-      },
-      {
-          _id : 3,
-          name: "Product 3",
-          price: 150,
-          images: [{
-              url: mensCol,
-          }],
-      },
-      {
-          _id : 4,
-          name: "Product 4",
-          price: 150,
-          images: [{
-              url: womenCol,
-          }],
-      },
-       {
-              _id : 5,
-              name: "Product 5",
-              price: 100,
-              images: [{
-                  url: mensCol,
-              }],
-          },
-          {
-              _id : 6,
-              name: "Product 6",
-              price: 150,
-              images: [{
-                  url: womenCol,
-              }],
-          },
-          {
-              _id : 7,
-              name: "Product 7",
-              price: 150,
-              images: [{
-                  url: mensCol,
-              }],
-          },
-          {
-              _id : 8,
-              name: "Product 8",
-              price: 150,
-              images: [{
-                  url: womenCol,
-              }],
-          },
- ]
+
+
 
 const Home = () => {
+    const dispatch = useDispatch();
+    const { products, loading, error } = useSelector((state) => state.product);
+    const [bestSellerProduct, setBestSellerProduct] = React.useState(null);
+
+    useEffect(() => {
+
+        dispatch(
+            fetchProductsByFilters({
+                gender: "Women",
+                category: "Bottom Wear",
+                limit: 8,
+            })
+        )
+
+        //fetch best seller product
+        const fetchBestSeller = async () => {
+           try {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`)
+            setBestSellerProduct(response.data)
+           } catch (error) {
+            console.error(error)
+           } 
+        }
+        fetchBestSeller();
+    },[dispatch])
   return (
     <div>
       <Hero />
@@ -85,13 +52,13 @@ const Home = () => {
       <NewArrivals />
       
       <h2 className='text-3xl text-center font-bold mb-4'>Best Seller</h2>
-      <BestSellers />
+      {bestSellerProduct ? (<ProductDetails productId={bestSellerProduct._id} />) : (<p className='text-center'>Loading best seller product...</p>)}
 
       <div className='container mx-auto'>
         <h2 className='text-3xl text-center font-bold mb-4'>
           Top Wears for Women
         </h2>
-        <ProductGrid products={placeholderProducts} />
+        <ProductGrid products={products} loading={loading} error={error} />
       </div>
 
       <FeaturedCollection />

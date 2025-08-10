@@ -9,14 +9,14 @@ router.post("/", protect, admin, async (req, res) => {
   try {
     const {
       name, description, price, discountPrice, countInStock,
-      category, brand, sizes, colours, collections, material,
+      category, brand, sizes, colors, collections, material,
       gender, images, isFeatured, isPublished, tags,
       dimensions, weight, sku
     } = req.body;
 
     const product = new Product({
       name, description, price, discountPrice, countInStock,
-      category, brand, sizes, colours, collections, material,
+      category, brand, sizes, colors, collections, material,
       gender, images, isFeatured, isPublished, tags,
       dimensions, weight, sku, user: req.user._id
     });
@@ -34,7 +34,7 @@ router.put("/:id", protect, admin, async (req, res) => {
   try {
     const {
       name, description, price, discountPrice, countInStock,
-      category, brand, sizes, colours, collections, material,
+      category, brand, sizes, colors, collections, material,
       gender, images, isFeatured, isPublished, tags,
       dimensions, weight, sku
     } = req.body;
@@ -53,7 +53,7 @@ router.put("/:id", protect, admin, async (req, res) => {
     product.category = category ?? product.category;
     product.brand = brand ?? product.brand;
     product.sizes = sizes ?? product.sizes;
-    product.colours = colours ?? product.colours;
+    product.colors = colors ?? product.colors;
     product.collections = collections ?? product.collections;
     product.material = material ?? product.material;
     product.gender = gender ?? product.gender;
@@ -102,7 +102,7 @@ router.get("/", async (req, res) => {
        const {
         collection,
         size,
-        colour,
+        color,
         gender, 
         minPrice,
         maxPrice,
@@ -117,7 +117,7 @@ router.get("/", async (req, res) => {
        let query = {};
 
        if(collection && collection.toLocaleLowerCase()!== "all"){
-        query.collection = collection;
+        query.collections = collection;
        }
 
        if(category && category.toLocaleLowerCase()!== "all"){
@@ -136,8 +136,8 @@ router.get("/", async (req, res) => {
         query.sizes = { $in: size.split(",") };
        }
 
-       if(colour){
-         query.colours = { $in: [colour] };
+       if(color){
+        query.colors = { $in: color.split(",") };
        }
 
        if(gender){
@@ -146,8 +146,8 @@ router.get("/", async (req, res) => {
 
        if(minPrice || maxPrice){
         query.price = {}
-        if(minPrice) query.price.gte = Number(minPrice);
-        if(maxPrice) query.price.gte = Number(maxPrice);
+        if(minPrice) query.price.$gte = Number(minPrice);
+        if(maxPrice) query.price.$lte = Number(maxPrice);
        }
 
        if(search) {

@@ -1,37 +1,25 @@
 import React from 'react';
+import { useDispatch, useSelector} from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { clearCart } from '../redux/slices/cartSlice';
+import { useEffect } from 'react';
 
-const checkout = {
-  _id: "123231",
-  createdAt: new Date(),
-  checkoutItems: [
-    {
-      productId: 1,
-      quantity: 2,
-      price: 10.99,
-      color: "Red",
-      size: "M",
-      name: "Phone-Charm",
-      image: "https://picsum.photos/200?random=1",
-    },
-    {
-      productId: 1,
-      quantity: 2,
-      price: 10.99,
-      color: "Red",
-      size: "M",
-      name: "Phone-Charm",
-      image: "https://picsum.photos/200?random=1",
-    },
-  ],
-  shippingAddress: {
-    address: "123 Main St",
-    city: "New York",
-    country: "USA",
-  },
-};
 
 const OrderConfirmationPage = () => {
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+   const {checkout} = useSelector((state) => state.checkout);
+
+   //clear the cart before checkout 
+   useEffect(() => {
+    if(checkout && checkout._id) {
+      dispatch(clearCart())
+      localStorage.removeItem("cart")
+    } else {
+      navigate("/my-orders")
+    }
+   }, [checkout, dispatch, navigate])
 
     const calculateEstimatedDelivery = (createdAt) => {
         const orderDate = new Date(createdAt);

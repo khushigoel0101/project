@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 
 import overcoatImg from '../../assets/overcoat.jpg'
 import basicsImg from '../../assets/essentials.jpg'
@@ -19,56 +20,22 @@ const NewArrivals = () => {
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
 
-  const newArrivals = [
-    {
-      _id: "1",
-      name: "Overcoat",
-      price: 3800,
-      images: [{ url: overcoatImg, altText: "Overcoat" }]
-    },
-    {
-      _id: "2",
-      name: "Essential Basics",
-      price: 700,
-      images: [{ url: basicsImg, altText: "Essential Basics" }]
-    },
-    {
-      _id: "3",
-      name: "Flared fun",
-      price: 2500,
-      images: [{ url: flaredImg, altText: "Flared fun" }]
-    },
-    {
-      _id: "4",
-      name: "Silk fantasy",
-      price: 3690,
-      images: [{ url: silkImg, altText: "Silk fantasy" }]
-    },
-    {
-      _id: "5",
-      name: "Style redeem",
-      price: 3690,
-      images: [{ url: styleRedeemImg, altText: "Style redeem" }]
-    },
-    {
-      _id: "6",
-      name: "From the skirts",
-      price: 3690,
-      images: [{ url: skirtsImg, altText: "From the skirts" }]
-    },
-    {
-      _id: "7",
-      name: "Late Spring",
-      price: 3690,
-      images: [{ url: springImg, altText: "Late Spring" }]
-    },
-    {
-      _id: "8",
-      name: "Spotlight",
-      price: 3690,
-      images: [{ url: spotlightImg, altText: "Spotlight" }]
+  const [newArrivals, setNewArrivals] = useState([ ])
+
+  useEffect(() => {
+    const fetchNewArrivals = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`
+        )
+        setNewArrivals(response.data)
+      } catch (error) {
+        console.error(error)
+      }
     }
-  ]
+
+    fetchNewArrivals();
+  }, [])
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -117,7 +84,7 @@ const NewArrivals = () => {
       updateScrollButtons()
       return () => container.removeEventListener("scroll", updateScrollButtons)
     }
-  }, [])
+  }, [newArrivals])
 
   return (
     <section className="py-16 px-4 lg:px-0">

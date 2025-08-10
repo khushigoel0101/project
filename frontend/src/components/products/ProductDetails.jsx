@@ -3,71 +3,35 @@ import { toast } from "sonner"
 import mensCol from '../../assets/ha-nguy-n-y1LlQ49Thko-unsplash.jpg';
 import womenCol from '../../assets/alina-bordunova-HgN5CqM6qkQ-unsplash.jpg';
 import ProductGrid from "./ProductGrid";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector} from 'react-redux'
+import { fetchProductDetails, fetchSimilarProducts } from "../../redux/slices/productsSlice";
+import { addToCart } from "../../redux/slices/cartSlice";
 
 
-const selectedProduct = {
-    name: "Signature Jacket",
-    price: 200,
-    originalPrice: 350,
-    description: "This is a great jacket for any occasion",
-    brand: "Nike",
-    material: "Cotton",
-    colors: ["Red", "Black"],
-    sizes: ["S", "M", "L", "XL"],
-    images: [{
-        url: mensCol,
-        altText: "Signature"
-    },
-    {
-        url: womenCol,
-        altText: "Signature 2"
-    }
-  ]
-}
 
-const similarProducts = [
-    {
-        _id : 1,
-        name: "Product 1",
-        price: 100,
-        images: [{
-            url: mensCol,
-        }],
-    },
-    {
-        _id : 2,
-        name: "Product 2",
-        price: 150,
-        images: [{
-            url: womenCol,
-        }],
-    },
-    {
-        _id : 3,
-        name: "Product 3",
-        price: 150,
-        images: [{
-            url: mensCol,
-        }],
-    },
-    {
-        _id : 4,
-        name: "Product 4",
-        price: 150,
-        images: [{
-            url: womenCol,
-        }],
-    },
-
-]
 
 const ProductDetails = () => {
+    const { id} = useParams()
+    const dispatch = useDispatch()
+
+    const { selectedProduct, loading, error, similarProducts } = useSelector ((state) => state.product)
+    const {user, guestId} = useSelector((state) => state.auth)
     const [mainImage, setmainImage] = useState("")
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
     const [quantity, setSelectedQuantity] = useState(1);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const productFetchId =  id;
+     
+    useEffect(() => {
+        if(productFetchId) {
+        dispatch(fetchProductDetails(productFetchId))
+        dispatch(fetchSimilarProducts({id: productFetchId}))
+     }
+    },[dispatch, productFetchId])
+
     useEffect(()=>{
         if(selectedProduct?.images?.length> 0 ) {
              setmainImage(selectedProduct.images[0].url);
@@ -88,22 +52,41 @@ const ProductDetails = () => {
         }
       setIsButtonDisabled(true);
 
-      setTimeout(() => {
-        toast.success("Product added to cart",{
+      dispatch(
+        addToCart({
+            productId: productFetchId,
+            quantity,
+            size: selectedSize,
+            color: selectedColor,
+            guestId,
+            userId: user?._id
+        })
+      ).then(() => {
+        toast.success("Product added to cart", {
             duration: 1000,
         })
+      })
+       .finally(()=> {
         setIsButtonDisabled(false);
-      }, 500)
+       })
+    }
 
+    if(loading) {
+       return <p>Loading...</p> 
+    }
+
+    if(error) {
+        return<p>Error: {error}</p>
     }
 
     return (
         <div className="p-6">
+            {selectedProduct && (
             <div className="max-w-6xl mx-auto bg-white p-8 rounded-lg">
                 <div className="flex flex-col md:flex-row">
                     {/* Left thumbnails */}
                     <div className="hidden md:flex flex-col space-y-4 mr-6">
-                        {selectedProduct.images.map((image,index) => (
+                        {selectedProduct?.images?.map((image,index) => (
                             <img
                             key = {index}
                             src = {image.url}
@@ -130,7 +113,7 @@ const ProductDetails = () => {
                     </div>
                     {/*Mobile Thumbnail */}
                     <div className="md:hidden flex overscroll-x-scroll space-x-4 mb-4">
-                        {selectedProduct.images.map((image,index) => (
+                        {selectedProduct?.images?.map((image,index) => (
                             <img
                             key = {index}
                             src = {image.url}
@@ -165,7 +148,7 @@ const ProductDetails = () => {
                                 className={`w-8 h-8 rounded-full border ${
                                 selectedColor === color ? "border-black" : "border-gray-300"}`}
                                 style={{
-                                    backgroundColor: color.toLowerCase(),
+                                    backgroundColor:color.toLowerCase(),
                                     filter: "brightness(0.5)"
                                 }}
                                 ></button>
@@ -230,9 +213,10 @@ const ProductDetails = () => {
                 </div>
                 <div className="mt-20">
                     <h2 className="text-2xl text-center font-medium mb-4">You May Also Like</h2>
-                    <ProductGrid products={similarProducts} />
+                    <ProductGrid products={similarProducts} loading = {loading} error={error} />
                 </div>
             </div>
+        )}
         </div>
     )
 }

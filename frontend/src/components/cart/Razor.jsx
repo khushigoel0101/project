@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 const Razor = ({ amount, onSuccess, onError }) => {
   useEffect(() => {
     const loadRazorpayScript = () => {
@@ -15,7 +16,7 @@ const Razor = ({ amount, onSuccess, onError }) => {
 
   const handleRazorpayPayment = () => {
     const options = {
-      KEY: import.meta.env.VITE_RAZORPAY_KEY, 
+      key: import.meta.env.VITE_RAZORPAY_KEY, 
       amount: amount * 100, 
       currency: "INR",
       name: "The Xyz Store",
