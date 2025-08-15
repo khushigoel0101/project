@@ -1,7 +1,11 @@
 @import "tailwindcss";
-#root{
+
+@import url('https://fonts.googleapis.com/css2?family=Arizonia&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Limelight&family=Lobster&family=Outfit:wght@100..900&family=Qwitcher+Grypen:wght@400;700&display=swap');
+
+#root {
   font-family: "Inter", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
+
 

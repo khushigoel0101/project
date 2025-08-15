@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { FaFilter } from 'react-icons/fa';
 import FilterSidebar from '../components/products/FilterSidebar';
 import ProductGrid from '../components/products/ProductGrid';
 import SortOptions from '../components/products/SortOptions';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductsByFilters } from '../redux/slices/productsSlice';
+import { TfiAlignJustify } from "react-icons/tfi";
 
 const CollectionPage = () => {
   const { collection } = useParams();
@@ -13,55 +13,60 @@ const CollectionPage = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector(state => state.product);
   const sidebarRef = useRef(null);
+  const buttonRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setIsSidebarOpen(prev => !prev);
 
   const handleClickOutside = (e) => {
-    if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+    if (
+      sidebarRef.current &&
+      !sidebarRef.current.contains(e.target) &&
+      buttonRef.current &&
+      !buttonRef.current.contains(e.target)
+    ) {
       setIsSidebarOpen(false);
     }
   };
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
-    const filters = {
-      collection: collection || '',
-    };
+    const filters = { collection: collection || '' };
     dispatch(fetchProductsByFilters(filters));
   }, [collection, searchParams, dispatch]);
 
   return (
-    <div className="flex flex-col lg:flex-row">
-      <button
-        onClick={toggleSidebar}
-        className="lg:hidden border p-2 flex justify-center items-center"
-      >
-        <FaFilter className="mr-2" />
-        Filter
-      </button>
-
+    <div className="flex">
+      {/* Sidebar */}
       <div
         ref={sidebarRef}
-        className={`${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } fixed inset-y-0 z-50 left-0 w-64 bg-white overflow-y-auto transition-transform duration-300 lg:translate-x-0 lg:static`}
+        className={`fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <FilterSidebar />
       </div>
 
-      <div className="flex-grow p-4">
-        <h2 className="text-2xl uppercase mb-4">{collection || 'All'} Collection</h2>
-        <SortOptions />
-        <ProductGrid products={products} loading={loading} error={error} />
+      {/* Toggle button - hidden when sidebar is open */}
+      <button
+        ref={buttonRef}
+        onClick={toggleSidebar}
+        className={`fixed top-29 left-4 z-50 transition-opacity duration-300 
+        ${isSidebarOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+      >
+        <TfiAlignJustify className="text-gray-800 text-3xl" />
+      </button>
+
+      {/* Main content */}
+      <div className="flex-grow transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl uppercase mb-4">{collection || 'All'} Collection</h2>
+          <SortOptions />
+          <ProductGrid products={products} loading={loading} error={error} />
+        </div>
       </div>
     </div>
   );

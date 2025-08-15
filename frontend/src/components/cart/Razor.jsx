@@ -1,28 +1,37 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useEffect, useState } from 'react';
 
 const Razor = ({ amount, onSuccess, onError }) => {
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+
   useEffect(() => {
-    const loadRazorpayScript = () => {
+    if (!document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
       const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => console.log("Razorpay SDK loaded");
+      script.onload = () => setScriptLoaded(true);
       script.onerror = () => alert("Razorpay SDK failed to load");
       document.body.appendChild(script);
-    };
-    loadRazorpayScript();
+    } else {
+      setScriptLoaded(true);
+    }
   }, []);
 
   const handleRazorpayPayment = () => {
+    if (!scriptLoaded) {
+      alert("Please wait, payment gateway is still loading...");
+      return;
+    }
+    if (!amount || amount <= 0) {
+      alert("Invalid payment amount");
+      return;
+    }
+
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY, 
-      amount: amount * 100, 
+      key: import.meta.env.VITE_RAZORPAY_KEY,
+      amount: amount * 100,
       currency: "INR",
       name: "The Xyz Store",
-      description: "Test Payment",
+      description: "Order Payment",
       handler: function (response) {
-        console.log("Razorpay Response:", response);
         if (onSuccess) onSuccess(response);
       },
       prefill: {
@@ -36,7 +45,7 @@ const Razor = ({ amount, onSuccess, onError }) => {
     };
 
     const rzp = new window.Razorpay(options);
-    rzp.on('payment.failed', function (response) {
+    rzp.on("payment.failed", function (response) {
       if (onError) onError(response.error);
     });
     rzp.open();
@@ -45,9 +54,12 @@ const Razor = ({ amount, onSuccess, onError }) => {
   return (
     <button
       onClick={handleRazorpayPayment}
-      className="w-full bg-gray-950 text-white py-3 rounded hover:bg-black transition"
+      disabled={!scriptLoaded}
+      className={`w-full py-3 rounded transition ${
+        scriptLoaded ? "bg-gray-950 text-white hover:bg-black" : "bg-gray-400 text-gray-200 cursor-not-allowed"
+      }`}
     >
-      Pay ₹{amount}
+      {scriptLoaded ? `Pay ₹${amount}` : "Loading Payment Gateway..."}
     </button>
   );
 };

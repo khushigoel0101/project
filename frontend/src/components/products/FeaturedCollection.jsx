@@ -15,8 +15,8 @@ const FeaturedCollection = () => {
             evryday, treat yourself to the best in fashion and elevate your wardrobe with our unique pieces.
         </p>
         <Link to ="/collections/all"
-        className="bg-gray-700 text-white px-6 py-3 text-lg hover:bg-gray-900">
-            Shop Now
+        className="text-lg text-black underline hover:text-gray-950">
+            SHOP NOW
         </Link>
         </div>
 

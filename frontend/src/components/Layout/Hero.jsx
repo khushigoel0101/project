@@ -13,7 +13,7 @@ const Hero = () => {
         <p className='text-sm tracking-tighter md:text-lg mb-6'>
             Explore our grace ready outfits and fast worldwide shipping.
         </p>
-        <Link to="#" className="bg-white text-gray-950 px-6 py-2 rounded-sm text-lg">
+        <Link to="/login" className="bg-white text-gray-950 px-6 py-2 rounded-sm text-lg">
         Shop Now
         </Link>
         </div>
