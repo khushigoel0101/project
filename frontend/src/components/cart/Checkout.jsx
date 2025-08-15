@@ -234,10 +234,14 @@ const Checkout = () => {
               <div>
                 <h3 className="text-lg mb-4">Pay with Razorpay</h3>
                 <Razor
-                  amount={cart.totalPrice}
+                 amount={cart.totalPrice}
+                 name={`${shippingAddress.firstName} ${shippingAddress.lastName}`}
+                 email={user.email}
+                  phone={shippingAddress.phone}
                   onSuccess={handlePaymentSuccess}
-                  onError={() => alert('Payment failed. Try again')}
-                />
+                 onError={() => alert('Payment failed. Try again')}
+/>
+
               </div>
             )}
           </div>
