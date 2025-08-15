@@ -22,7 +22,7 @@ const Hero = () => {
             Explore our grace ready outfits and fast worldwide shipping.
           </p>
           <Link
-            to={user ? "/collectionPage" : "/login"}
+            to={user ? "/collections/all" : "/login"}
             className="bg-white text-gray-950 px-6 py-2 rounded-sm text-lg"
           >
             Shop Now
