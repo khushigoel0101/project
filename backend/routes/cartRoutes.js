@@ -1,6 +1,8 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const Cart = require('../models/Cart');
 const Product = require('../models/Products');
+const User = require('../models/Users');
 const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
@@ -15,13 +17,37 @@ const getCart = async (userId, guestId) => {
     return null;
 };
 
+const getCartOwner = async (req) => {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer')) {
+        const token = authHeader.split(' ')[1];
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.user.id).select('_id');
+        if (!user) {
+            throw new Error('User not found');
+        }
+        return { userId: user._id };
+    }
+
+    const guestId = req.body.guestId || req.query.guestId;
+    if (!guestId) {
+        return {};
+    }
+    return { guestId };
+};
+
 // @route   POST /api/cart
 // @desc    Add a product to the cart (guest or logged-in user)
 // @access  Public
 router.post("/", async (req, res) => {
-    const { productId, quantity, size, color, guestId, userId } = req.body;
+    const { productId, quantity, size, color } = req.body;
 
     try {
+        const { userId, guestId } = await getCartOwner(req);
+        if (!userId && !guestId) {
+            return res.status(400).json({ message: "Cart owner is required" });
+        }
+
         const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ msg: "Product not found" });
@@ -88,9 +114,14 @@ router.post("/", async (req, res) => {
 // @desc    Update product quantity in cart for a guest or logged in user
 // @access  Public
 router.put("/", async (req, res) => {
-    const { productId, quantity, size, color, guestId, userId } = req.body;
+    const { productId, quantity, size, color } = req.body;
 
     try {
+        const { userId, guestId } = await getCartOwner(req);
+        if (!userId && !guestId) {
+            return res.status(400).json({ message: "Cart owner is required" });
+        }
+
         let cart = await getCart(userId, guestId);
         if (!cart) return res.status(404).json({ message: "Cart not found" });
 
@@ -128,9 +159,14 @@ router.put("/", async (req, res) => {
 // @desc    Remove a product from the cart
 // @access  Public
 router.delete("/", async (req, res) => {
-    const { productId, size, color, guestId, userId } = req.body;
+    const { productId, size, color } = req.body;
 
     try {
+        const { userId, guestId } = await getCartOwner(req);
+        if (!userId && !guestId) {
+            return res.status(400).json({ message: "Cart owner is required" });
+        }
+
         let cart = await getCart(userId, guestId);
 
         if (!cart) return res.status(404).json({ message: "Cart not found" });
@@ -164,9 +200,12 @@ router.delete("/", async (req, res) => {
 // @desc    Get logged-in user's or guest user's cart
 // @access  Public
 router.get("/", async (req, res) => {
-    const { userId, guestId } = req.query;
-
     try {
+        const { userId, guestId } = await getCartOwner(req);
+        if (!userId && !guestId) {
+            return res.status(400).json({ message: "Cart owner is required" });
+        }
+
         let cart = await getCart(userId, guestId);
         if (cart) {
             res.json(cart);

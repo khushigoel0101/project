@@ -3,6 +3,7 @@ import { useDispatch,useSelector } from 'react-redux'
 import { fetchProductDetails, updateProduct } from '../../redux/slices/productsSlice'
 import { useNavigate, useParams,  } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 const EditProductPage = () => {
 
@@ -62,7 +63,10 @@ const EditProductPage = () => {
                 `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
                 formData,
                 {
-                    headers: {"Content-type": "multipart/form-data"},
+                    headers: {
+                        "Content-type": "multipart/form-data",
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+                    },
                 }
             )
             setProductData((prevData) => ({

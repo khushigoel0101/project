@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import login from '../assets/register.jpg';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { fetchUserOrders } from '../redux/slices/orderSlice';
@@ -18,8 +16,11 @@ const MyOrdersPage = () => {
 
 
   const handleRowClick = (orderId) => {
-
+    navigate(`/order/${orderId}`)
   }
+
+  if (loading) return <p className="p-4">Loading orders...</p>
+  if (error) return <p className="p-4">Error: {error}</p>
 
   return (
     <div className="w-full mx-auto p-4 sm:p-6">
@@ -51,12 +52,14 @@ const MyOrdersPage = () => {
                       className="w-10 h-10 sm:h-12 object-cover rounded-lg"
                     />
                   </td>
-                  <td className="py-2 px-2 sm:py-4 font-medium text-gray-900 whitespace-nowrap">#{order.id}</td>
+                  <td className="py-2 px-2 sm:py-4 font-medium text-gray-900 whitespace-nowrap">#{order._id}</td>
                   <td className="py-2 px-4 sm:py-4 sm:px-4">
                     {new Date(order.createdAt).toLocaleDateString()}<br />
                     {new Date(order.createdAt).toLocaleTimeString()}
                   </td>
-                  <td className="py-2 px-4 sm:py-4 sm:px-4">{order.shippingAddress}</td>
+                  <td className="py-2 px-4 sm:py-4 sm:px-4">
+                    {order.shippingAddress.address}, {order.shippingAddress.city}
+                  </td>
                   <td className="py-2 px-4 sm:py-4 sm:px-4">
                     {order.orderItems.map((item) => item.name).join(', ')}
                   </td>

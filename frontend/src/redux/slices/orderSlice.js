@@ -9,7 +9,7 @@ export const fetchUserOrders = createAsyncThunk('orders/fetchUserOrders',
                 `${import.meta.env.VITE_BACKEND_URL}/api/orders/my-orders`,
                 {
                     headers: {
-                        Authoriazation: `Bearer ${localStorage.getItem("userToken")}`,
+                        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                     }
                 }
             )
@@ -34,7 +34,7 @@ export const fetchOrderDetails = createAsyncThunk("orders/fetchOrdersDetails", a
         )
         return response.data;
     } catch (error) {
-        rejectWithValue(error.response.data)
+        return rejectWithValue(error.response.data)
     }
  }
 )

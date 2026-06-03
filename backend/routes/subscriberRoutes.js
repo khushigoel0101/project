@@ -15,14 +15,14 @@ router.post('/subscribe', async (req, res) => {
     }
 
     try {
-        let subscribe = await Subscriber.findOne({ email })
+        const subscribe = await Subscriber.findOne({ email })
 
-        if(Subscriber) {
+        if(subscribe) {
             return res.status(400).json({ message: "Email already exists" })
         }
 
-        Subscriber = new Subscriber({ email })
-        await Subscriber.save()
+        const newSubscriber = new Subscriber({ email })
+        await newSubscriber.save()
 
         res
          .status(201)

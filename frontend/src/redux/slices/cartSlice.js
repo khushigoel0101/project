@@ -10,6 +10,13 @@ const SaveCartToStorage = (cart) => {
   localStorage.setItem('cart', JSON.stringify(cart));
 };
 
+const authHeaders = (userId) =>
+  userId
+    ? {
+        Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+      }
+    : {};
+
 // Fetch cart for a user or guest
 export const fetchCart = createAsyncThunk(
   'cart/fetchCart',
@@ -17,6 +24,7 @@ export const fetchCart = createAsyncThunk(
     try {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/cart`, {
         params: { userId, guestId },
+        headers: authHeaders(userId),
       });
       return response.data;
     } catch (error) {
@@ -38,6 +46,8 @@ export const addToCart = createAsyncThunk(
         color,
         guestId,
         userId,
+      }, {
+        headers: authHeaders(userId),
       });
       return response.data;
     } catch (error) {
@@ -59,6 +69,8 @@ export const updateCartItemQuantity = createAsyncThunk(
         userId,
         size,
         color,
+      }, {
+        headers: authHeaders(userId),
       });
       return response.data;
     } catch (error) {
@@ -77,6 +89,7 @@ export const removeCartItem = createAsyncThunk(
         method: 'DELETE',
         url: `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
         data: { productId, guestId, userId, size, color },
+        headers: authHeaders(userId),
       });
       return response.data;
     } catch (error) {

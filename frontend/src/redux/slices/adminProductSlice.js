@@ -2,13 +2,15 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_BACKEND_URL;
-const USER_TOKEN = `Bearer ${localStorage.getItem("userToken")}`;
+const authHeaders = () => ({
+    Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+});
 
 // Fetch all admin products
 export const fetchAdminProducts = createAsyncThunk("adminProducts/fetchProducts", async () => {
     const response = await axios.get(`${API_URL}/api/admin/products`, {
         headers: {
-            Authorization: USER_TOKEN,
+            ...authHeaders(),
         },
     });
     return response.data;
@@ -16,9 +18,9 @@ export const fetchAdminProducts = createAsyncThunk("adminProducts/fetchProducts"
 
 // Create a new product
 export const createProduct = createAsyncThunk("adminProducts/createProduct", async (productData) => {
-    const response = await axios.post(`${API_URL}/api/admin/products`, productData, {
+    const response = await axios.post(`${API_URL}/api/products`, productData, {
         headers: {
-            Authorization: USER_TOKEN,
+            ...authHeaders(),
         },
     });
     return response.data;
@@ -26,9 +28,9 @@ export const createProduct = createAsyncThunk("adminProducts/createProduct", asy
 
 // Update an existing product
 export const updateProduct = createAsyncThunk("adminProducts/updateProduct", async ({ id, productData }) => {
-    const response = await axios.put(`${API_URL}/api/admin/products/${id}`, productData, {
+    const response = await axios.put(`${API_URL}/api/products/${id}`, productData, {
         headers: {
-            Authorization: USER_TOKEN,
+            ...authHeaders(),
         },
     });
     return response.data;
@@ -38,7 +40,7 @@ export const updateProduct = createAsyncThunk("adminProducts/updateProduct", asy
 export const deleteProduct = createAsyncThunk("adminProducts/deleteProduct", async (id) => {
     const response = await axios.delete(`${API_URL}/api/products/${id}`, {
         headers: {
-            Authorization: USER_TOKEN,
+            ...authHeaders(),
         },
     });
     return response.data;

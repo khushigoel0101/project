@@ -13,6 +13,7 @@ const Checkout = () => {
   const { user } = useSelector((state) => state.auth);
 
   const [checkoutId, setCheckoutId] = useState(null);
+  const [razorpayOrder, setRazorpayOrder] = useState(null);
   const [shippingAddress, setShippingAddress] = useState({
     firstName: '',
     lastName: '',
@@ -44,13 +45,23 @@ const Checkout = () => {
       );
       if (res.payload && res.payload._id) {
         setCheckoutId(res.payload._id);
+        const orderResponse = await axios.post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${res.payload._id}/razorpay-order`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+            },
+          }
+        );
+        setRazorpayOrder(orderResponse.data);
       }
     }
   };
 
   const handlePaymentSuccess = async (details) => {
     try {
-      const response = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`,
         { paymentStatus: 'paid', paymentDetails: details },
         {
@@ -235,6 +246,7 @@ const Checkout = () => {
                 <h3 className="text-lg mb-4">Pay with Razorpay</h3>
                 <Razor
                  amount={cart.totalPrice}
+                 order={razorpayOrder}
                  name={`${shippingAddress.firstName} ${shippingAddress.lastName}`}
                  email={user.email}
                   phone={shippingAddress.phone}

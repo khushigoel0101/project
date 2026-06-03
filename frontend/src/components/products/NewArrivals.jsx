@@ -3,14 +3,6 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
-import overcoatImg from '../../assets/overcoat.jpg'
-import basicsImg from '../../assets/essentials.jpg'
-import flaredImg from '../../assets/flared.jpg'
-import silkImg from '../../assets/silk.jpg'
-import styleRedeemImg from '../../assets/style-redeem.jpg'
-import skirtsImg from '../../assets/skirts.jpg'
-import springImg from '../../assets/late-spring.jpg'
-import spotlightImg from '../../assets/spotlight.jpg'
 
 const NewArrivals = () => {
   const scrollRef = useRef(null);
@@ -50,7 +42,7 @@ const NewArrivals = () => {
     scrollRef.current.scrollLeft = scrollLeft - walk;
    }
 
-  const handleMouseUpOrLeave = (e) => {
+  const handleMouseUpOrLeave = () => {
     setIsDragging(false)
    }
 

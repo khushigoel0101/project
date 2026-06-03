@@ -1,7 +1,6 @@
-import {useEffect , useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useEffect } from "react";
 
-const Razor = ({ amount, name, email, phone, onSuccess, onError }) => {
+const Razor = ({ amount, name, email, phone, order, onSuccess, onError }) => {
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -13,9 +12,10 @@ const Razor = ({ amount, name, email, phone, onSuccess, onError }) => {
 
   const handleRazorpayPayment = () => {
     const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY, 
-      amount: amount * 100, 
-      currency: "INR",
+      key: order?.key || import.meta.env.VITE_RAZORPAY_KEY, 
+      amount: order?.amount || amount * 100, 
+      currency: order?.currency || "INR",
+      order_id: order?.orderId,
       name: "The Xyz Store",
       description: "Test Payment",
       handler: function (response) {
@@ -40,7 +40,9 @@ const Razor = ({ amount, name, email, phone, onSuccess, onError }) => {
 
   return (
     <button
+      type="button"
       onClick={handleRazorpayPayment}
+      disabled={!order?.orderId}
       className="w-full bg-gray-950 text-white py-3 rounded hover:bg-black transition"
     >
       Pay ₹{amount}

@@ -1,7 +1,6 @@
 const express = require("express");
 const Order = require("../models/Order");
-const { product, admin } = require("../middleware/authMiddleware");
-const { protect } = require("../middleware/authMiddleware");
+const { protect, admin } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -29,9 +28,9 @@ router.put("/:id", protect, admin, async (req,res) => {
         if(order) {
             order.status = req.body.status || order.status;
             order.isDelivered = 
-               req.body.status === "delivered" ? true : order.isDelivered;
+               req.body.status === "Delivered" ? true : order.isDelivered;
             order.deliveredAt = 
-               req.body.status === "delivered" ? Date.now() : order.deliveredAt;
+               req.body.status === "Delivered" ? Date.now() : order.deliveredAt;
 
             const updatedOrder = await order.save()
             res.json(updatedOrder);
